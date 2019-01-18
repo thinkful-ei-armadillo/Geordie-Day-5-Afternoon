@@ -140,6 +140,13 @@ function toggleCheckbox() {
 
 function handleEditClicked(){
   //this function will be responsible for when users want to edit the title of an item
+  $('.js-shopping-list').on('click', '.shopping-item', event => {
+    event.preventDefault();
+    console.log('`handleEditClicked` ran');
+    // const itemIndex = getItemIndexFromElement(event.currentTarget);
+    // toggleCheckedForListItem(itemIndex);
+    // renderShoppingList();
+  });
 }
 
 // this function will be our callback when the page loads. it's responsible for
