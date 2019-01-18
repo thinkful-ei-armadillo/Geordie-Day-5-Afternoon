@@ -14,7 +14,8 @@ const STORE = {
 function generateItemElement(item, itemIndex, template) {
   return `
     <li class="js-item-index-element" data-item-index="${itemIndex}">
-      <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}" contenteditable = "true">${item.name}</span>
+      <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}</span>
+      <span class="js-shopping-item-edit hidden"><input class="edit-bar" value=${item.name}></input><button class="edit-button">OK</button></span>
       <div class="shopping-item-controls">
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
@@ -44,9 +45,9 @@ function renderShoppingList() {
   if(STORE.checkboxChecked) {
     filteredItems = filteredItems.filter(item => item.checked === false);
   }
-  //   if($('.js-searchbar').val() !== '') {
-  //     filteredItems = filteredItems.filter(item => item.name.includes($('.js-searchbar').val()));
-  //   }
+  if($('.js-searchbar').val() !== '') {
+    filteredItems = filteredItems.filter(item => item.name.includes($('.js-searchbar').val()));
+  }
   
   const shoppingListItemsString = generateShoppingItemsString(filteredItems);
 
@@ -108,11 +109,6 @@ function handleDeleteItemClicked() {
   });
 }
 
-function filterBySearch(searchTerm){
-  console.log(`Filtering shopping list by search term: "${searchTerm}"`);
-  STORE.items = STORE.items.filter(item => item.name.includes(searchTerm));
-  console.log(STORE.items.filter(item => item.name.includes(searchTerm)));
-}
 
 function handleSearch(){
   //this function will be responsible for when users want to search for an item
@@ -122,8 +118,6 @@ function handleSearch(){
     console.log('`handleNewSearch` ran');
     const newSearch = $('.js-searchbar').val();
     console.log(newSearch);
-    $('.js-searchbar').val('');
-    filterBySearch(newSearch);
     renderShoppingList();
   });
 }
@@ -138,13 +132,22 @@ function toggleCheckbox() {
   });
 }
 
-function handleEditClicked(){
-  //this function will be responsible for when users want to edit the title of an item
-  $('.js-shopping-list').on('click', '.shopping-item', event => {
-    event.preventDefault();
-    console.log('`handleEditClicked` ran');
-    // const itemIndex = getItemIndexFromElement(event.currentTarget);
-    // toggleCheckedForListItem(itemIndex);
+function saveChange(itemIndex) {
+  $('.js-shopping-list').on('click', '.edit-button', event => {
+    STORE.items[itemIndex] = $('.edit-bar').val();
+  });
+}
+
+function handleEditItemClicked() {
+  // we attach the event listener on the element
+  $('.js-shopping-list').on('click', '.js-shopping-item', event => {
+
+    // look for the current/clicked-on item and find the input and remove hidden
+    $(event.target).closest('li').find('.js-shopping-item-edit').toggleClass('hidden');
+    // look for the current item and find the `item` and hide it
+    $(event.target).closest('li').find('.js-shopping-item').toggleClass('hidden');
+    const itemIndex = getItemIndexFromElement(event.currentTarget);
+    saveChange(itemIndex);
     // renderShoppingList();
   });
 }
@@ -160,7 +163,7 @@ function handleShoppingList() {
   handleDeleteItemClicked();
   handleSearch();
   toggleCheckbox();
-  handleEditClicked();
+  handleEditItemClicked();
 }
 
 // when the page loads, call `handleShoppingList`
