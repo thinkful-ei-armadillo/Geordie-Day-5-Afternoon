@@ -96,6 +96,16 @@ function handleDeleteItemClicked() {
   });
 }
 
+function handleSearch(){
+  //this function will be responsible for when users want to search for an item
+  //and will display all items containing the search terms
+}
+
+function handleDisplayCheckClicked(){
+  //this function will be responsble for when users want to display either all items
+  //or items that are only unchecked
+}
+
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
 // that handle new item submission and user clicks on the "check" and "delete" buttons
